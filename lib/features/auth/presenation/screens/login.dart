@@ -7,6 +7,7 @@ import 'package:authh/core/widgets/custom_text.dart';
 import 'package:authh/features/auth/presenation/bloc/auth_cubit.dart';
 import 'package:authh/features/auth/presenation/bloc/auth_states.dart';
 import 'package:authh/features/auth/presenation/screens/sign_up.dart';
+import 'package:authh/features/weather/presentation/pages/weather_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,6 +40,7 @@ class Login extends StatelessWidget {
               posActionName: "ok",
               title: "login success"
           );
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => WeatherScreen(),));
         }
       },
       child: Scaffold(
