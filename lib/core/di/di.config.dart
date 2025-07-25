@@ -21,6 +21,18 @@ import '../../features/auth/domain/repository/auth_repository.dart' as _i961;
 import '../../features/auth/domain/usecase/login_usecase.dart' as _i911;
 import '../../features/auth/domain/usecase/register_usecase.dart' as _i769;
 import '../../features/auth/presenation/bloc/auth_cubit.dart' as _i314;
+import '../../features/prediction/data/data_source/prediction_remote_data_source.dart'
+    as _i813;
+import '../../features/prediction/data/data_source/prediction_remote_data_source_impl.dart'
+    as _i427;
+import '../../features/prediction/data/repo/prediction_repo_impl.dart'
+    as _i1049;
+import '../../features/prediction/domain/repositories/prediction_repository.dart'
+    as _i989;
+import '../../features/prediction/domain/usecases/get_prediction_usecase.dart'
+    as _i222;
+import '../../features/prediction/presentation/bloc/prediction_cubit.dart'
+    as _i199;
 import '../../features/weather/data/data_source/weather_remote_data_source.dart'
     as _i220;
 import '../../features/weather/data/data_source/weather_remote_data_source_impl.dart'
@@ -55,6 +67,9 @@ extension GetItInjectableX on _i174.GetIt {
         authRemoteDataSource: gh<_i548.AuthRemoteDataSource>(),
       ),
     );
+    gh.factory<_i813.PredictionRemoteDataSource>(
+      () => _i427.PredictionRemoteDataSourceImpl(),
+    );
     gh.factory<_i911.LoginUseCase>(
       () => _i911.LoginUseCase(authRepository: gh<_i961.AuthRepository>()),
     );
@@ -65,6 +80,17 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i265.WeatherRepositoryImpl(
         remoteDataSource: gh<_i220.WeatherRemoteDataSource>(),
       ),
+    );
+    gh.factory<_i989.PredictionRepository>(
+      () => _i1049.PredictionRepoImpl(
+        predictionRemoteDataSource: gh<_i813.PredictionRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i222.GetPredictionUseCase>(
+      () => _i222.GetPredictionUseCase(gh<_i989.PredictionRepository>()),
+    );
+    gh.factory<_i199.PredictionCubit>(
+      () => _i199.PredictionCubit(gh<_i222.GetPredictionUseCase>()),
     );
     gh.factory<_i314.AuthCubit>(
       () => _i314.AuthCubit(

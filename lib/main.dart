@@ -1,5 +1,5 @@
 import 'package:authh/core/di/di.dart';
-import 'package:authh/features/auth/presenation/screens/on_boarding.dart';
+import 'package:authh/features/prediction/presentation/screens/prediction_screen.dart';
 import 'package:authh/observe.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: OnBoarding(),
+      home: PredictionScreen(),
     );
   }
 }

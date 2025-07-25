@@ -75,9 +75,13 @@ class DioHelper {
 
   static Future<Response> getData({
     required String ?url,
+    Map<String, dynamic>? queryParameters
   }) async {
     try {
-      Response response = await _dio!.get(url!);
+      Response response = await _dio!.get(
+          url!,
+        queryParameters: queryParameters
+      );
 
       return response;
     } catch (e) {
