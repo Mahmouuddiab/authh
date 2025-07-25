@@ -37,11 +37,11 @@ class CustomField extends StatelessWidget {
           fillColor: fillColor,
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide.none
+              borderSide: BorderSide(color: Colors.grey,width: 2)
           ),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
-              borderSide: BorderSide.none
+              borderSide: BorderSide(color: Colors.grey,width: 2)
           ),
           errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
