@@ -36,5 +36,10 @@ class WeatherRepositoryImpl implements WeatherRepository {
   Future<List<ForecastModel>> getForecastWeather(String cityName)async{
     return remoteDataSource.getForecastWeather(cityName) ;
     }
+
+  @override
+  Future<int?> getPrediction(List<int> features) {
+    return remoteDataSource.getPrediction(features);
+  }
   }
 

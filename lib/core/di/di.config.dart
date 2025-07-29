@@ -21,18 +21,6 @@ import '../../features/auth/domain/repository/auth_repository.dart' as _i961;
 import '../../features/auth/domain/usecase/login_usecase.dart' as _i911;
 import '../../features/auth/domain/usecase/register_usecase.dart' as _i769;
 import '../../features/auth/presenation/bloc/auth_cubit.dart' as _i314;
-import '../../features/prediction/data/data_source/prediction_remote_data_source.dart'
-    as _i813;
-import '../../features/prediction/data/data_source/prediction_remote_data_source_impl.dart'
-    as _i427;
-import '../../features/prediction/data/repo/prediction_repo_impl.dart'
-    as _i1049;
-import '../../features/prediction/domain/repositories/prediction_repository.dart'
-    as _i989;
-import '../../features/prediction/domain/usecases/get_prediction_usecase.dart'
-    as _i222;
-import '../../features/prediction/presentation/bloc/prediction_cubit.dart'
-    as _i199;
 import '../../features/weather/data/data_source/weather_remote_data_source.dart'
     as _i220;
 import '../../features/weather/data/data_source/weather_remote_data_source_impl.dart'
@@ -44,7 +32,10 @@ import '../../features/weather/domain/repository/weather_repository.dart'
 import '../../features/weather/domain/usecase/get_current_weather.dart' as _i30;
 import '../../features/weather/domain/usecase/get_forecast_weather.dart'
     as _i712;
+import '../../features/weather/domain/usecase/GetPredictionUseCase.dart'
+    as _i514;
 import '../../features/weather/presentation/bloc/forecast_bloc.dart' as _i697;
+import '../../features/weather/presentation/bloc/predict_cubit.dart' as _i177;
 import '../../features/weather/presentation/bloc/weather_bloc.dart' as _i433;
 import '../Api/dio_helper.dart' as _i330;
 
@@ -67,9 +58,6 @@ extension GetItInjectableX on _i174.GetIt {
         authRemoteDataSource: gh<_i548.AuthRemoteDataSource>(),
       ),
     );
-    gh.factory<_i813.PredictionRemoteDataSource>(
-      () => _i427.PredictionRemoteDataSourceImpl(),
-    );
     gh.factory<_i911.LoginUseCase>(
       () => _i911.LoginUseCase(authRepository: gh<_i961.AuthRepository>()),
     );
@@ -81,22 +69,14 @@ extension GetItInjectableX on _i174.GetIt {
         remoteDataSource: gh<_i220.WeatherRemoteDataSource>(),
       ),
     );
-    gh.factory<_i989.PredictionRepository>(
-      () => _i1049.PredictionRepoImpl(
-        predictionRemoteDataSource: gh<_i813.PredictionRemoteDataSource>(),
-      ),
-    );
-    gh.factory<_i222.GetPredictionUseCase>(
-      () => _i222.GetPredictionUseCase(gh<_i989.PredictionRepository>()),
-    );
-    gh.factory<_i199.PredictionCubit>(
-      () => _i199.PredictionCubit(gh<_i222.GetPredictionUseCase>()),
-    );
     gh.factory<_i314.AuthCubit>(
       () => _i314.AuthCubit(
         gh<_i911.LoginUseCase>(),
         gh<_i769.RegisterUseCase>(),
       ),
+    );
+    gh.factory<_i514.GetPredictionUseCase>(
+      () => _i514.GetPredictionUseCase(gh<_i647.WeatherRepository>()),
     );
     gh.factory<_i30.GetCurrentWeather>(
       () => _i30.GetCurrentWeather(repository: gh<_i647.WeatherRepository>()),
@@ -104,8 +84,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i712.GetForecastWeather>(
       () => _i712.GetForecastWeather(repository: gh<_i647.WeatherRepository>()),
     );
+    gh.factory<_i177.PredictCubit>(
+      () => _i177.PredictCubit(gh<_i514.GetPredictionUseCase>()),
+    );
     gh.factory<_i697.ForecastCubit>(
-      () => _i697.ForecastCubit(gh<_i712.GetForecastWeather>()),
+      () => _i697.ForecastCubit(
+        gh<_i712.GetForecastWeather>(),
+        gh<_i514.GetPredictionUseCase>(),
+      ),
     );
     gh.factory<_i433.WeatherCubit>(
       () => _i433.WeatherCubit(
