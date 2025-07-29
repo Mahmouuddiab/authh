@@ -1,38 +1,36 @@
 from flask import Flask, request, jsonify
-import requests
 import pickle
+import numpy as np
 
 app = Flask(__name__)
 
-# Load your AI model
-with open('model.pkl', 'rb') as f:
-    model = pickle.load(f)
+# Load the model
+file_path = "random_forest_model.pkl"  # Path to the model file
+with open(file_path, 'rb') as file:
+    model = pickle.load(file)
 
-WEATHER_API_KEY = '0045fad517524e2880801243251307'
-WEATHER_API_URL = 'https://api.weatherapi.com/v1/current.json'
 
-@app.route('/predict', methods=['GET'])
+# Define a route for the home page
+@app.route('/')
+def home():
+    return "Welcome to the ML Prediction API!"
+
+
+# Define the prediction route
+@app.route('/predict', methods=['POST'])
 def predict():
-    city = request.args.get('city', 'Cairo')
+    data = request.json  # Get the JSON data from the request
+    features = data['features']  # Extract the features
 
-    # Fetch weather data
-    weather_res = requests.get(WEATHER_API_URL, params={'key': WEATHER_API_KEY, 'q': city})
-    data = weather_res.json()
+    # Convert to 2D array (since the model expects 2D input)
+    features = np.array(features).reshape(1, -1)
 
-    # Extract features for model (example: temp, humidity, wind speed)
-    temp = data['current']['temp_c']
-    humidity = data['current']['humidity']
-    wind_kph = data['current']['wind_kph']
+    # Make the prediction
+    prediction = model.predict(features)
 
-    # Predict using model
-    features = [[temp, humidity, wind_kph]]  # Adjust based on your model input
-    prediction = model.predict(features)[0]
+    # Return the prediction as JSON
+    return jsonify({'prediction': prediction.tolist()})
 
-    return jsonify({
-        'city': city,
-        'input': {'temp': temp, 'humidity': humidity, 'wind_kph': wind_kph},
-        'prediction': prediction
-    })
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5001)

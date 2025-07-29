@@ -31,3 +31,8 @@ class ForecastError extends WeatherState{
   ForecastError({required this.message});
 }
 
+
+class PredictionLoading extends WeatherState {}
+class PredictionLoaded extends WeatherState {}
+class PredictionError extends WeatherState {}
+

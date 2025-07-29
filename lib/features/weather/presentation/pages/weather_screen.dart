@@ -1,4 +1,6 @@
+import 'package:authh/features/weather/data/model/ForecastModel.dart';
 import 'package:authh/features/weather/presentation/bloc/forecast_bloc.dart';
+import 'package:authh/features/weather/presentation/bloc/predict_cubit.dart';
 import 'package:authh/features/weather/presentation/bloc/weather_bloc.dart';
 import 'package:authh/features/weather/presentation/bloc/weather_state.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,8 @@ class WeatherScreen extends StatelessWidget {
 
   final WeatherCubit weatherCubit = getIt<WeatherCubit>();
   final ForecastCubit forecastCubit = getIt<ForecastCubit>();
-
+  final PredictCubit predictCubit=getIt<PredictCubit>();
+  ForecastModel? forecastModel;
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -62,6 +65,12 @@ class WeatherScreen extends StatelessWidget {
                 if (city.isNotEmpty) {
                   await weatherCubit.fetchWeather(city); // first
                   await forecastCubit.getForecast(city); // then
+                  List<int> features=[
+                    forecastModel!.maxTemp > 40 ? 1 : 0,
+                    forecastModel!.minTemp < 15 ? 1 : 0,
+                    forecastModel!.conditionText.contains("rain") ? 1 : 0,
+                  ];
+                  await predictCubit.getPrediction(features);
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -103,12 +112,36 @@ class WeatherScreen extends StatelessWidget {
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
                               color: Colors.white)),
-                      Text('${weather.temperatureCelsius} °C',
-                          style: const TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
-                      Image.network(weather.iconUrl, height: 80),
+                      SizedBox(height: 10,),
+                      Wrap(
+                        spacing: 20,
+                        runSpacing: 10,
+                        alignment:WrapAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: [
+                              Text("Current",style:TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white) ,),
+                              Text('${weather.temperatureCelsius} °C',
+                                  style: const TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white)),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text("Prediction",style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),),
+                              Image.network(weather.iconUrl, height: 80),
+                            ],
+                          ),
+                        ],
+                      ),
                       const SizedBox(height: 16),
                       Wrap(
                         spacing: 20,
@@ -132,12 +165,6 @@ class WeatherScreen extends StatelessWidget {
                           ),
                           Column(
                             children: [
-                              const Text("Condition",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white)),
-                              const SizedBox(height: 5),
                               Text(weather.condition,
                                   style: const TextStyle(
                                       fontSize: 20,
@@ -151,7 +178,7 @@ class WeatherScreen extends StatelessWidget {
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Next 4 days forecast:",
+                          "Next 3 days forecast:",
                           style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

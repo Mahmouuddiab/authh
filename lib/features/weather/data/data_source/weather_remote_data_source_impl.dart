@@ -61,5 +61,26 @@ class WeatherRemoteDataSourceImpl implements WeatherRemoteDataSource{
 
   }
 
+  @override
+  Future<int?> getPrediction(List<int> features)async{
+    try{
+      final response= await DioHelper.postData(
+          url: "http://192.168.1.9:5001/predict",
+          data: {"features":features}
+      );
+      if(response.statusCode==200){
+        final data=response.data;
+        return data['prediction'] ;
+      }
+      else{
+        print('Error: ${response.data}');
+        return null;
+      }
+    }catch(e){
+      print('Exception: $e');
+      return null;
+    }
+  }
+
 
   }
